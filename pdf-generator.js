@@ -2,15 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
-const data = {
-    title: "A new Brazilian School",
-    date: "05/12/2018",
-    name: "Rodolfo Luis Marcos",
-    age: 28,
-    birthdate: "12/07/1990",
-    course: "Computer Science",
-    obs: "Graduated in 2014 by Federal University of Lavras, work with Full-Stack development and E-commerce.",
-};
 
 async function createPDF(data) {
     var templateHtml = fs.readFileSync(
@@ -18,12 +9,12 @@ async function createPDF(data) {
         "utf8"
     );
     var template = handlebars.compile(templateHtml);
-    var html = template(data);
+    var html = encodeURIComponent(template(data));
 
     var milis = new Date();
     milis = milis.getTime();
 
-    var pdfPath = path.join("pdf", `${data.name}-${milis}.pdf`);
+    var pdfPath = path.join(__dirname + "/pdf", `${data.name}-${milis}.pdf`);
 
     //https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
     var options = {
@@ -41,7 +32,7 @@ async function createPDF(data) {
 
     const browser = await puppeteer.launch({
         args: ["--no-sandbox"],
-        headless: true,
+        headless: false,
     });
 
     var page = await browser.newPage();
@@ -52,4 +43,7 @@ async function createPDF(data) {
 
     await page.pdf(options);
     await browser.close();
+    return page;
 }
+
+module.exports = { createPDF };
