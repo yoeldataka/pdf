@@ -1,12 +1,12 @@
 const { createPDF } = require("./pdf-generator");
 const data = {
-    title: "A new Brazilian School",
-    date: "05/12/2018",
-    name: "Rodolfo Luis Marcos",
-    age: 28,
-    birthdate: "12/07/1990",
-    course: "Computer Science",
-    obs: "Graduated in 2014 by Federal University of Lavras, work with Full-Stack development and E-commerce.",
+    title: "TESTING HANDLEBARS DATA",
+    date: "12/12/1212",
+    name: "Yoel Martin Fornieles",
+    age: 37,
+    birthdate: "25/02/1986",
+    course: "Creating pdfs",
+    obs: "Testing handlebars and pdf integration",
 };
 
 (async () => {

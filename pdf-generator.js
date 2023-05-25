@@ -5,11 +5,12 @@ const handlebars = require("handlebars");
 
 async function createPDF(data) {
     var templateHtml = fs.readFileSync(
-        path.join(process.cwd(), "template.html"),
+        path.join(process.cwd(), "template2.html"),
         "utf8"
     );
     var template = handlebars.compile(templateHtml);
-    var html = encodeURIComponent(template(data));
+    var html = template(data);
+    html = encodeURIComponent(html);
 
     var milis = new Date();
     milis = milis.getTime();
@@ -41,7 +42,7 @@ async function createPDF(data) {
         waitUntil: "networkidle0",
     });
 
-    await page.pdf(options);
+    const buffer = await page.pdf(options);
     await browser.close();
     return page;
 }
