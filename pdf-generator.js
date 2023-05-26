@@ -19,7 +19,7 @@ async function createPDF(data) {
 
     //https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
     var options = {
-        width: "1230px",
+        width: "780",
         headerTemplate: "<p></p>",
         footerTemplate: "<p></p>",
         displayHeaderFooter: false,
