@@ -1,4 +1,4 @@
-const { createPDF } = require("./pdf-generator");
+const { createPdfFromHBTemplate } = require("./pdf-generator");
 const data = {
     title: "TESTING HANDLEBARS DATA",
     date: "12/12/1212",
@@ -11,8 +11,7 @@ const data = {
 
 (async () => {
     console.log("before start");
-
-    const pdf = await createPDF(data);
+    const pdf = await createPdfFromHBTemplate(data);
     console.log("done");
     console.log(pdf);
     console.log("after start");

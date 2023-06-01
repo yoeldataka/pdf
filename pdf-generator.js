@@ -3,18 +3,37 @@ const path = require("path");
 const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
 
-async function createPDF(data) {
+const createAndFillHBTemplate = (data) => {
     var templateHtml = fs.readFileSync(
         path.join(process.cwd(), "template2.html"),
         "utf8"
     );
-    var template = handlebars.compile(templateHtml);
-    var html = template(data);
-    html = encodeURIComponent(html);
+    return encodeURIComponent(handlebars.compile(templateHtml)(data));
+};
+
+const createPdfFromUrl = async (url, options) => {
+    const browser = await puppeteer.launch({
+        args: ["--no-sandbox"],
+        headless: false,
+    });
+
+    var page = await browser.newPage();
+
+    await page.goto(url, {
+        waitUntil: "networkidle0",
+    });
+
+    const buffer = await page.pdf(options);
+    await browser.close();
+    return buffer;
+};
+
+async function createPdfFromHBTemplate(data) {
+    const html = createAndFillHBTemplate(data);
+    var url = `data:text/html;charset=UTF-8,${html}`;
 
     var milis = new Date();
     milis = milis.getTime();
-
     var pdfPath = path.join(__dirname + "/pdf", `${data.name}-${milis}.pdf`);
 
     //https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions
@@ -31,20 +50,12 @@ async function createPDF(data) {
         path: pdfPath,
     };
 
-    const browser = await puppeteer.launch({
-        args: ["--no-sandbox"],
-        headless: false,
-    });
+    const pdfBuffer = await createPdfFromUrl(
+        "https://www.mtggoldfish.com",
+        options
+    );
 
-    var page = await browser.newPage();
-
-    await page.goto(`data:text/html;charset=UTF-8,${html}`, {
-        waitUntil: "networkidle0",
-    });
-
-    const buffer = await page.pdf(options);
-    await browser.close();
-    return page;
+    return pdfBuffer;
 }
 
-module.exports = { createPDF };
+module.exports = { createPdfFromHBTemplate };
